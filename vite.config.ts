@@ -12,6 +12,6 @@ export default defineConfig({
   ],
   base: './',
   build: {
-    outDir: 'index',
+    outDir: 'preview',
   },
 })
