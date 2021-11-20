@@ -77,20 +77,20 @@ interface FormState {
 /* 周内 */
 const resultTime = computed(() => {
   if (moment(formState.startTime).get('hours') === 8 && moment(formState.startTime).get('minutes') < 30) {
-    return moment('8:30:00', 'h:mm:ss').add({ hours: 9, minutes: 15 }).format('h:mm:ss')
+    return moment('8:30:00', 'hh:mm:ss').add({ hours: 9, minutes: 15 }).format('hh:mm:ss')
   }
-  return moment(formState.startTime).add({ hours: 9, minutes: 15 }).format('h:mm:ss')
+  return moment(formState.startTime).add({ hours: 9, minutes: 15 }).format('hh:mm:ss')
 })
 const addWorkResultTime = computed(() => {
   if (moment(formState.startTime).get('hours') === 8 && moment(formState.startTime).get('minutes') < 30) {
-    return moment('8:30:00', 'h:mm:ss')
+    return moment('8:30:00', 'hh:mm:ss')
       .add({ hours: 9 + formState.overtimeHours, minutes: formState.overtimeHours === 0 ? 15 : 45 })
-      .format('h:mm:ss')
+      .format('hh:mm:ss')
   }
 
   return moment(formState.startTime)
     .add({ hours: 9 + formState.overtimeHours, minutes: formState.overtimeHours === 0 ? 15 : 45 })
-    .format('h:mm:ss')
+    .format('hh:mm:ss')
 })
 
 const formState: UnwrapRef<FormState> = reactive({
@@ -103,14 +103,14 @@ const formState: UnwrapRef<FormState> = reactive({
 
 const addWorkResultTimeEnd = computed(() => {
   if (moment(formState.startTime).get('hours') === 8 && moment(formState.startTime).get('minutes') < 30) {
-    return moment('8:30:00', 'h:mm:ss')
+    return moment('8:30:00', 'hh:mm:ss')
       .add({ hours: formState.overtimeHoursEnd > 4 ? formState.overtimeHoursEnd + 1 : formState.overtimeHoursEnd })
-      .format('h:mm:ss')
+      .format('hh:mm:ss')
   }
 
   return moment(formState.startTime)
     .add({ hours: formState.overtimeHoursEnd > 4 ? formState.overtimeHoursEnd + 1 : formState.overtimeHoursEnd })
-    .format('h:mm:ss')
+    .format('hh:mm:ss')
 })
 
 const activeKey: Ref<string> = ref('weekdays')
