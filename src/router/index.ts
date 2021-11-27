@@ -2,19 +2,21 @@ import { createRouter, createWebHashHistory, RouteRecordRaw, createWebHistory } 
 // import Home from '../components/Home.vue'
 // import About from '../components/About.vue'
 // import errorPage from '../components/404.vue'
-import Home from '@/views/Home.vue'
-import Time from '@/views/HelloWorld.vue'
 const routes: Array<RouteRecordRaw> = [
   {
     path: '/home',
-    component: Home,
+    component: () => import('@/views/Home.vue'),
     meta: {
       transition: 'slide-left',
     },
     children: [
       {
         path: 'workTime',
-        component: Time,
+        component: () => import('@/views/HelloWorld.vue'),
+      },
+      {
+        path: 'hours',
+        component: () => import('@/views/Hours.vue'),
       },
     ],
   },

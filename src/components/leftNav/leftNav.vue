@@ -1,12 +1,13 @@
 <template>
   <div>
     <a-menu mode="inline" theme="dark" @click="data.clickMenu">
-      <a-sub-menu key="/home/workTime">
+      <a-sub-menu key="/home">
         <template #icon>
           <FreeIcon type="free-gongju1"></FreeIcon>
         </template>
         <template #title>小工具合集</template>
-        <a-menu-item key="1">工作时间</a-menu-item>
+        <a-menu-item key="/workTime">计算工作时间</a-menu-item>
+        <a-menu-item key="/hours">每月工时</a-menu-item>
       </a-sub-menu>
     </a-menu>
   </div>
@@ -30,7 +31,7 @@ const data = reactive({
   clickMenu(e: MenuInfo) {
     console.log(e)
     router.push({
-      path: e.keyPath[0],
+      path: e.keyPath.join(''),
     })
   },
 })
