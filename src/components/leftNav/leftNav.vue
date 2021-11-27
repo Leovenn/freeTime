@@ -15,6 +15,7 @@
 <script lang="ts" setup>
 import { defineComponent, reactive, VNodeChild } from 'vue'
 import { FreeIcon } from '@/uitils/icons'
+import { useRouter } from 'vue-router'
 interface dataTyps {
   clickMenu: Function
 }
@@ -24,9 +25,13 @@ interface MenuInfo {
   item: VNodeChild
   domEvent: MouseEvent
 }
+const router = useRouter()
 const data = reactive({
   clickMenu(e: MenuInfo) {
     console.log(e)
+    router.push({
+      path: e.keyPath[0],
+    })
   },
 })
 </script>

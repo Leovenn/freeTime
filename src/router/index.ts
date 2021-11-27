@@ -3,7 +3,7 @@ import { createRouter, createWebHashHistory, RouteRecordRaw, createWebHistory } 
 // import About from '../components/About.vue'
 // import errorPage from '../components/404.vue'
 import Home from '@/views/Home.vue'
-// import LeftNav from '@/views/component/leftNav/leftNav.vue'
+import Time from '@/views/HelloWorld.vue'
 const routes: Array<RouteRecordRaw> = [
   {
     path: '/home',
@@ -11,12 +11,12 @@ const routes: Array<RouteRecordRaw> = [
     meta: {
       transition: 'slide-left',
     },
-    // children: [
-    //   {
-    //     path: 'LeftNav',
-    //     component: LeftNav,
-    //   },
-    // ],
+    children: [
+      {
+        path: 'workTime',
+        component: Time,
+      },
+    ],
   },
   {
     path: '/',
