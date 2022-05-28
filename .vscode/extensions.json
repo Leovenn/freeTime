@@ -1,3 +1,7 @@
 {
-  "recommendations": ["johnsoncodehk.volar"]
+  "recommendations": [
+    "vue.volar",
+    "christian-kohler.path-intellisense",
+    "esbenp.prettier-vscode",
+  ],
 }

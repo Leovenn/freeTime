@@ -14,6 +14,13 @@ export default defineConfig({
   base: './',
   build: {
     outDir: 'preview',
+    minify: 'terser',
+    terserOptions: {
+      compress: {
+        drop_console: true,
+        drop_debugger: true,
+      },
+    },
   },
   resolve: {
     alias: {
