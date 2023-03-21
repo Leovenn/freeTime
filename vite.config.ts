@@ -1,30 +1,40 @@
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
-import ViteComponents, { AntDesignVueResolver } from 'vite-plugin-components'
-import path from 'path'
+import AutoImport from 'unplugin-auto-import/vite'
+import Components from 'unplugin-vue-components/vite'
+import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
+import { resolve } from 'path'
+import UnoCSS from 'unocss/vite'
 
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
     vue(),
-    ViteComponents({
-      customComponentResolvers: [AntDesignVueResolver()],
+    AutoImport({
+      resolvers: ElementPlusResolver(),
+      dts: 'src/typings/auto-imports.d.ts',
+      include: [
+        /\.tsx?$/, // .ts, .tsx
+        /\.vue$/,
+      ],
+      imports: ['vue', 'vue-router'],
     }),
+    Components({
+      resolvers: [ElementPlusResolver()],
+      dts: 'src/typings/components.d.ts',
+    }),
+
+    UnoCSS({}),
   ],
+
   base: './',
-  build: {
-    outDir: 'preview',
-    minify: 'terser',
-    terserOptions: {
-      compress: {
-        drop_console: true,
-        drop_debugger: true,
-      },
-    },
-  },
+
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, 'src'),
+      '@': resolve(__dirname, 'src'),
     },
+  },
+  build: {
+    outDir: 'preview',
   },
 })

@@ -1,7 +1,8 @@
 {
     "path-intellisense.mappings": {
-        "@": "${workspaceFolder}/src",
+        "@": "${workspaceRoot}/src"
     },
-    "editor.formatOnSave": true,
-    "files.eol": "\n",
+    "files.exclude": {
+        "**/node_modules": true
+    },
 }
