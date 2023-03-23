@@ -2,7 +2,4 @@
     "path-intellisense.mappings": {
         "@": "${workspaceRoot}/src"
     },
-    "files.exclude": {
-        "**/node_modules": true
-    },
 }
