@@ -24,6 +24,22 @@
       </el-card>
     </div>
 
+    <div class="flex">
+      <el-card shadow="hover" class="w100%" header="本月加班时长（excel计算）">
+        <el-upload class="upload-demo" drag action="#" multiple :auto-upload="true" :before-upload="beforeUpload">
+          <!-- <el-icon class="el-icon--upload"><upload-filled /></el-icon> -->
+          <div class="">点击导入excel表，将为您自动计算总加班时间</div>
+          <template #tip>
+            <!-- <div class="el-upload__tip">jpg/png files with a size less than 500kb</div> -->
+          </template>
+        </el-upload>
+
+        <el-table :data="state.tableData" max-height="100vh" show-summary :summary-method="getSummaries">
+          <el-table-column :prop="item.value" :label="item.label" v-for="item in state.tableHeader" show-overflow-tooltip />
+        </el-table>
+      </el-card>
+    </div>
+
     <div class="flex items-center gap-20px">
       <div class="flex-1">
         <el-card shadow="hover" header="周内加班时间计算"> developing... </el-card>
@@ -32,6 +48,10 @@
         <el-card shadow="hover" header="周末加班时间计算"> developing... </el-card>
       </div>
     </div>
+
+    <div class="w100% text-center">
+      <el-link href=" https://github.com/Leovenn/freeTime/issues/new" target="_blank">bug反馈</el-link>
+    </div>
   </div>
 </template>
 
@@ -39,14 +59,21 @@
 import dayjs from 'dayjs'
 import { week } from '@/holiday'
 import isBetween from 'dayjs/plugin/isBetween'
+import type { UploadRawFile } from 'element-plus'
+import { read, utils } from 'xlsx'
+
 dayjs.extend(isBetween)
 
 interface StateType {
   workDate: string[]
+  tableData: { [key: string]: string | number }[]
+  tableHeader: { label: string; value: string }[]
 }
 
 const state: StateType = reactive({
   workDate: [],
+  tableData: [],
+  tableHeader: [],
 })
 
 const setCurrentMonth = () => {
@@ -68,6 +95,7 @@ const setCurrentMonth = () => {
     state.workDate = [start, end]
   }
 }
+
 const setNextMonth = () => {
   if (state.workDate.length !== 2) setCurrentMonth()
   else {
@@ -79,6 +107,7 @@ const setNextMonth = () => {
     } else setCurrentMonth()
   }
 }
+
 const setPreviousMonth = () => {
   if (state.workDate.length !== 2) setCurrentMonth()
   else {
@@ -109,6 +138,64 @@ const duration = computed(() => {
   if (hour - Math.floor(hour) <= 0.5 && hour - Math.floor(hour) !== 0) return Math.floor(hour) + 0.5
   else return Math.ceil(hour)
 })
+
+const beforeUpload = async (rawFile: UploadRawFile) => {
+  const reader = new FileReader()
+  reader.onload = (event) => {
+    const data = event.target?.result
+    const workbook = read(data, { type: 'array' })
+    const worksheet = workbook.Sheets[workbook.SheetNames[0]]
+    const result = utils.sheet_to_json(worksheet, { header: 1 }) as string[][]
+
+    state.tableHeader = [...result[0].map((item) => ({ label: item, value: item })), { label: '计算后', value: '计算后' }]
+
+    state.tableData = result.slice(1).map((item) => {
+      let r: { [key: string]: string | number } = {}
+
+      result[0].forEach((key, index) => (r[key] = item[index]))
+
+      const sum = parseFloat(r?.['绩效时长(小时)'] as string)
+
+      if (r?.['加班类型'] === '工作日') {
+        // 2小时起步
+
+        if (sum >= 2) {
+          const integerPart = Math.floor(sum)
+
+          if (sum >= integerPart + 0.5) {
+            r['计算后'] = integerPart + 0.5
+          } else r['计算后'] = integerPart
+        } else {
+          r['计算后'] = 0
+        }
+      } else {
+        // 四小时起步
+
+        if (sum >= 4) {
+          const integerPart = Math.floor(sum)
+          if (sum >= integerPart + 0.5) {
+            r['计算后'] = integerPart + 0.5
+          } else r['计算后'] = integerPart
+        } else {
+          r['计算后'] = 0
+        }
+      }
+
+      return r
+    })
+  }
+  reader.readAsArrayBuffer(rawFile)
+
+  return false
+}
+
+const getSummaries = (param: any) => {
+  const result = state.tableData.map((item) => item['计算后'] as number)
+
+  const sum = result.reduce((pre, cur) => pre + cur, 0)
+
+  return [`加班时长${sum}小时`]
+}
 
 setCurrentMonth()
 </script>
